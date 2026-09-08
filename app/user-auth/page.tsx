@@ -49,7 +49,10 @@ const page = () => {
                 <span className="bg-background px-2 text-gray-300 ">Or</span>
               </div>
             </div>
-            <Button className="w-full bg-black text-white dark:hover:gray-200 dark:bg-white dark:hover:text-black">
+            <Button
+              className="w-full bg-black text-white dark:hover:gray-200 dark:bg-white dark:hover:text-black"
+              variant="ghost"
+            >
               <FaGithub className="w-5 h-5 mr-2" />
               Login with Github
             </Button>
