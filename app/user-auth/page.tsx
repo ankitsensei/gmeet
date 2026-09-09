@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
+import Link from "next/link";
 import { FaGithub } from "react-icons/fa";
 
 const page = () => {
@@ -56,6 +57,15 @@ const page = () => {
               <FaGithub className="w-5 h-5 mr-2" />
               Login with Github
             </Button>
+            <p className="text-sm text-center text-gray-600 dark:text-gray-400">
+              Don&apos;t have an account{" "}
+              <Link
+                href="#"
+                className="text-blue-500 hover:underline dark:text-blue-400"
+              >
+                Create now
+              </Link>
+            </p>
           </div>
         </div>
       </div>
