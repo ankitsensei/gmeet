@@ -3,17 +3,29 @@ import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import Link from "next/link";
 import { FaGithub } from "react-icons/fa";
+import { signIn } from "next-auth/react";
 import { useState } from "react";
+import { toast } from "react-toastify";
+import { Loader } from "lucide-react";
 
 const page = () => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const url = process.env.NEXTAUTH_URL;
 
-  const handleLogin = async () => {
-    
+  const handleLogin = async (provider) => {
+    setIsLoading(true);
+    try {
+      await signIn(provider, { callbackUrl: url });
+      toast.info(`Logging with ${provider}`);
+    } catch (error) {
+      toast.error(`Failed to login ${provider}, please try again later`);
+    } finally {
+      setIsLoading(false);
+    }
   };
   return (
     <div className="flex min-h-screen bg-linear-to-r from-blue-100 to-purple-200 dark:from-gray-900 dark:to-gray-800">
+      {isLoading && <Loader />}
       <div className="hidden w-1/2 bg-gray-100 lg:block">
         <Image
           src="/images/meet_image.jpg"
@@ -34,6 +46,7 @@ const page = () => {
             <Button
               className="w-full dark:hover:bg-white dark:hover:text-black"
               variant="outline"
+              onClick={() => handleLogin("google")}
             >
               <svg
                 className="w-5 h-5 mr-2"
@@ -61,6 +74,7 @@ const page = () => {
             <Button
               className="w-full bg-black text-white dark:hover:gray-200 dark:bg-white dark:hover:text-black"
               variant="ghost"
+              onClick={() => handleLogin("github")}
             >
               <FaGithub className="w-5 h-5 mr-2" />
               Login with Github
