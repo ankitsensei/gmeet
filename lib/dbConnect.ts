@@ -35,6 +35,8 @@ async function dbConnect() {
       throw error;
     }
   }
+
+  return cached.conn;
 }
 
 export default dbConnect;

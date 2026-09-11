@@ -1,5 +1,5 @@
 import dbConnect from "@/lib/dbConnect";
-import { User } from "lucide-react";
+import User from "@/models/User";
 import NextAuth from "next-auth";
 import GithubProvider from "next-auth/providers/github";
 import GoogleProvider from "next-auth/providers/google";
@@ -58,7 +58,7 @@ export const authOptions = {
     maxAge: 90 * 24 * 60 * 60,
   },
   pages: {
-    singIn: "user-auth",
+    signIn: "user-auth",
   },
 };
 
