@@ -25,10 +25,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html
+      <html
       lang="en"
       suppressHydrationWarning
       className={`${inter.variable} ${geistMono.variable} h-full antialiased`}
+      style={{ scrollbarGutter: "stable" }}
     >
       <body className="min-h-full flex flex-col">
         <Providers>{children}</Providers>

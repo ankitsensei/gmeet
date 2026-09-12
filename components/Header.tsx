@@ -1,19 +1,20 @@
 "use client";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Button } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { Info, LogOut, Moon, Plus, Sun, Video, X } from "lucide-react";
 import { signOut, useSession } from "next-auth/react";
 import { useTheme } from "next-themes";
 import Link from "next/link";
 import React, { useState } from "react";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuTrigger,
-} from "./ui/dropdown-menu";
-import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 
 const Header = () => {
   const { theme, setTheme } = useTheme();
-  const { data: session, status } = useSession();
+  const { data: session } = useSession();
   const [open, setOpen] = useState(false);
 
   const formatTimeDate = () => {
@@ -28,22 +29,21 @@ const Header = () => {
     });
   };
 
-  const userPlaceHolder = session?.user.name
+  const userPlaceHolder = session?.user?.name
     ?.split(" ")
     .map((name) => name[0])
-    .join();
+    .join("");
 
-  const handleLogout = async () => {
+  const handlelogout = async () => {
     await signOut({ callbackUrl: "/user-auth" });
   };
-
   return (
-    <div className="flex items-center justify-between p-6 bg-white dark:bg-gray-900 border-b dark:border-gray-700">
+    <div className="flex items-center justify-between p-6 bg-white dark:bg-gray-900 border-b dark:border-gray-700 ">
       <div className="flex items-center space-x-4">
         <Link href="/" className="flex items-center space-x-2">
           <Video className="w-8 h-8 text-blue-500" />
           <span className="hidden md:block text-xl font-semibold text-gray-800 dark:text-white">
-            GMeet
+            Google Meet
           </span>
         </Link>
       </div>
@@ -51,20 +51,21 @@ const Header = () => {
         <span className="text-md text-gray-500 dark:text-gray-200">
           {formatTimeDate()}
         </span>
-        <button
+        <Button
           variant="ghost"
           size="icon"
           onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
         >
-          {theme === "dark" ? (
+          {theme === "dark " ? (
             <Sun className="w-5 h-5 text-orange-500" />
           ) : (
             <Moon className="w-5 h-5 text-blue-500" />
           )}
-        </button>
-        <button variant="ghost" size="icon">
+        </Button>
+        <Button variant="ghost" size="icon" className="hidden md:block">
           <Info className="w-5 h-5 ml-2" />
-        </button>
+        </Button>
+
         <DropdownMenu open={open} onOpenChange={setOpen}>
           <DropdownMenuTrigger asChild>
             <Avatar className="cursor-pointer">
@@ -74,7 +75,7 @@ const Header = () => {
                   alt={session?.user?.name}
                 />
               ) : (
-                <AvatarFallback className="text-md dark:bg-gray-300">
+                <AvatarFallback className="text-lg dark:bg-gray-300">
                   {userPlaceHolder}
                 </AvatarFallback>
               )}
@@ -85,19 +86,19 @@ const Header = () => {
               <span className="text-sm font-bold text-gray-800 dark:text-white">
                 {session?.user?.email}
               </span>
-              <button
-                className="rounded-full p-4"
+              <Button
+                className="rounded-full p-4 "
                 variant="ghost"
+                size="icon"
                 onClick={() => setOpen(false)}
               >
-                <X className="h-5 w-5" />
-              </button>
+                <X className="h-5 w-5 " />
+              </Button>
             </div>
             <div className="flex flex-col items-center mb-4">
               <Avatar className="w-20 h-20 mb-2">
                 {session?.user?.image ? (
                   <AvatarImage
-                    
                     src={session?.user?.image}
                     alt={session?.user?.name}
                   />
@@ -112,21 +113,27 @@ const Header = () => {
               </h1>
             </div>
             <div className="flex mb-4">
-              <button
-                className="w-1/2 h-14 rounded-l-full flex items-center justify-center border border-gray-600"
-                variant="outline"
-              >
+              <Button className="w-1/2 h-14 rounded-l-full" variant="outline">
                 <Plus className="h-4 w-4 mr-2" />
                 Add Account
-              </button>
-              <button
-                className="w-1/2 h-14 rounded-r-full flex items-center justify-center border border-gray-600"
+              </Button>
+              <Button
+                className="w-1/2 h-14 rounded-r-full"
                 variant="outline"
-                onClick={handleLogout}
+                onClick={handlelogout}
               >
                 <LogOut className="h-4 w-4 mr-2" />
                 SignOut
-              </button>
+              </Button>
+            </div>
+            <div className="text-center text-sm text-gray-500 ">
+              <Link href="#" className="hover:bg-gray-300 p-2 rounded-lg">
+                Privacy Policy
+              </Link>
+              {" . "}
+              <Link href="#" className="hover:bg-gray-300 p-2 rounded-lg">
+                Terms of Service
+              </Link>
             </div>
           </DropdownMenuContent>
         </DropdownMenu>
