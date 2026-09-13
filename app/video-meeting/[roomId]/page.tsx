@@ -61,30 +61,36 @@ const VideoMeeting = () => {
     const zegoInstance = ZegoUIKitPrebuilt.create(kitToken);
     setZp(zegoInstance);
     // start the call
-    zegoInstance.joinRoom({
-      container: element,
-      sharedLinks: [
-        {
-          name: "join via this link",
-          url: `${window.location.origin}/video-meeting/${roomID}`,
+    try {
+      zegoInstance.joinRoom({
+        container: element,
+        sharedLinks: [
+          {
+            name: "join via this link",
+            url: `${window.location.origin}/video-meeting/${roomID}`,
+          },
+        ],
+        scenario: {
+          mode: ZegoUIKitPrebuilt.GroupCall,
         },
-      ],
-      scenario: {
-        mode: ZegoUIKitPrebuilt.GroupCall,
-      },
-      showAudioVideoSettingsButton: true,
-      showScreenSharingButton: true,
-      showTurnOffRemoteCameraButton: true,
-      showTurnOffRemoteMicrophoneButton: true,
-      showRemoveUserButton: true,
-      onJoinRoom: () => {
-        toast.success("Meeting joined succesfully");
-        setIsInMeeting(true);
-      },
-      onLeaveRoom: () => {
-        endMeeting();
-      },
-    });
+        showAudioVideoSettingsButton: true,
+        showScreenSharingButton: true,
+        showTurnOffRemoteCameraButton: true,
+        showTurnOffRemoteMicrophoneButton: true,
+        showRemoveUserButton: true,
+        onJoinRoom: () => {
+          toast.success("Meeting joined succesfully");
+          setIsInMeeting(true);
+        },
+        onLeaveRoom: () => {
+          endMeeting();
+        },
+      });
+    } catch (error) {
+      console.error("Failed to join room:", error);
+      toast.error("Could not join meeting. Please allow camera and microphone permissions and try again.");
+      joinedRef.current = false;
+    }
   };
 
   const endMeeting = () => {
