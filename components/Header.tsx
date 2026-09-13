@@ -68,6 +68,7 @@ const Header = () => {
 
         <DropdownMenu open={open} onOpenChange={setOpen}>
           <DropdownMenuTrigger
+            nativeButton={false}
             render={
               <Avatar className="cursor-pointer">
                 {session?.user?.image ? (
