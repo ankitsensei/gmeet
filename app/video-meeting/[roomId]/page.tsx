@@ -28,7 +28,6 @@ const VideoMeeting = () => {
       joinMeeting(containerRef.current);
     } else if (status !== "loading") {
       console.log("session is not authenticate .please login before use");
-      toast.error("Session not authenticated. Please login before use");
     }
   }, [session, status]);
 
@@ -41,7 +40,8 @@ const VideoMeeting = () => {
   }, [zp]);
 
   const joinMeeting = async (element) => {
-    const { ZegoUIKitPrebuilt } = await import("@zegocloud/zego-uikit-prebuilt");
+    const { ZegoUIKitPrebuilt } =
+      await import("@zegocloud/zego-uikit-prebuilt");
     // generate Kit Token
     const appID = Number(process.env.NEXT_PUBLIC_ZEGOAPP_ID);
     const serverSecret = process.env.NEXT_PUBLIC_ZEGO_SERVER_SECRET;
