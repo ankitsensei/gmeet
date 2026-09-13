@@ -14,14 +14,14 @@ const Page = () => {
 
   useEffect(() => {
     localStorage.removeItem("hasShownWelcome");
-  });
+  }, []);
 
-  const handleLogin = async (provider) => {
+  const handleLogin = async (provider: "google" | "github") => {
     setIsLoading(true);
     try {
       await signIn(provider, { callbackUrl: url });
       toast.info(`Logging with ${provider}`);
-    } catch (error) {
+    } catch {
       toast.error(`Failed to login ${provider}, please try again later`);
     } finally {
       setIsLoading(false);
@@ -69,11 +69,11 @@ const Page = () => {
             Sign in with Google
           </Button>
           <div className="relative flex items-center my-6">
-            <div className="flex-grow border-t border-gray-300 dark:border-gray-600"></div>
+            <div className="grow border-t border-gray-300 dark:border-gray-600"></div>
             <span className="px-3 text-sm text-gray-500 dark:text-gray-400">
               Or
             </span>
-            <div className="flex-grow border-t border-gray-300 dark:border-gray-600"></div>
+            <div className="grow border-t border-gray-300 dark:border-gray-600"></div>
           </div>
           <Button
             className="w-full"
