@@ -33,8 +33,8 @@ const Page = () => {
   return (
     <div className="flex flex-col min-h-screen bg-gray-100 dark:bg-gray-900">
       <Header />
-      <main className="grow p-8 pt-32">
-        <div className="max-w-7xl mx-auto">
+      <main className="grow flex items-center p-8">
+        <div className="max-w-7xl w-full mx-auto">
           <div className="flex flex-col md:flex-row items-center justify-between">
             <div className="md:w-1/2 mb-8 md:mb-8">
               <h1 className="text-5xl font-bold mb-6 text-gray-900 dark:text-white">
