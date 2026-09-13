@@ -6,11 +6,6 @@ import type { Account, Profile, Session } from "next-auth";
 import GithubProvider from "next-auth/providers/github";
 import GoogleProvider from "next-auth/providers/google";
 
-interface GithubProfile extends Profile {
-  login?: string;
-  avatar_url?: string;
-}
-
 interface GoogleProfile extends Profile {
   picture?: string;
   email_verified?: boolean;

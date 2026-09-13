@@ -1,55 +1,49 @@
 "use client";
 import Header from "@/components/Header";
 import MeetingAction from "@/components/ui/MeetingAction";
-import MeetingFeature from "@/components/ui/MeetingFeature";
-import { Loader } from "lucide-react";
+import { Loader2 } from "lucide-react";
 import { useSession } from "next-auth/react";
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 import { toast } from "react-toastify";
 
 const Page = () => {
-  const [isLoading, setIsLoading] = useState<boolean>(true);
   const { data: session, status } = useSession();
+  const isLoading = status === "loading";
 
   useEffect(() => {
     if (status === "authenticated") {
-      setIsLoading(false);
       const hasShownWelcome = localStorage.getItem("hasShownWelcome");
       if (!hasShownWelcome) {
         toast.success(`Welcome back ${session?.user?.name}!`);
         localStorage.setItem("hasShownWelcome", "true");
       }
-    } else if (status === "unauthenticated") {
-      setIsLoading(false);
     }
   }, [status, session]);
+
   if (isLoading) {
     return (
       <div className="w-full h-screen flex items-center justify-center">
-        <Loader />
+        <Loader2 className="w-6 h-6 animate-spin text-muted-foreground" />
       </div>
     );
   }
+
   return (
-    <div className="flex flex-col min-h-screen bg-gray-100 dark:bg-gray-900">
+    <div className="flex flex-col min-h-screen">
       <Header />
-      <main className="grow flex items-center p-8">
-        <div className="max-w-7xl w-full mx-auto">
-          <div className="flex flex-col md:flex-row items-center justify-between">
-            <div className="md:w-1/2 mb-8 md:mb-8">
-              <h1 className="text-5xl font-bold mb-6 text-gray-900 dark:text-white">
-                Video calls and meetings for everyone
-              </h1>
-              <p className="text-3xl text-gray-600 dark:text-gray-300 mb-12">
-                Connect, collaborate and celebrate from anywhere with Google
-                Meet
-              </p>
-              <MeetingAction />
-            </div>
-            <div className="md:w-1/2">
-              <MeetingFeature />
-            </div>
+      <main className="flex-1 flex items-center justify-center p-6">
+        <div className="w-full max-w-2xl space-y-10">
+          <div className="text-center space-y-3">
+            <h1 className="text-4xl sm:text-5xl font-bold tracking-tight leading-tight">
+              Video calls and
+              <br />
+              meetings for everyone
+            </h1>
+            <p className="text-lg text-muted-foreground max-w-md mx-auto">
+              Connect, collaborate, and celebrate from anywhere with gmeet.
+            </p>
           </div>
+          <MeetingAction />
         </div>
       </main>
     </div>

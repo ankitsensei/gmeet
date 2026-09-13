@@ -19,18 +19,32 @@ export const metadata: Metadata = {
   description: "Video meetings made simple",
 };
 
+const themeInitScript = `
+  (function() {
+    try {
+      var theme = localStorage.getItem('theme') || 'light';
+      var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      if (theme === 'system') theme = prefersDark ? 'dark' : 'light';
+      document.documentElement.classList.add(theme);
+    } catch (e) {}
+  })();
+`
+
 export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
   return (
-      <html
+    <html
       lang="en"
       suppressHydrationWarning
       className={`${inter.variable} ${geistMono.variable} h-full antialiased`}
       style={{ scrollbarGutter: "stable" }}
     >
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
+      </head>
       <body className="min-h-full flex flex-col">
         <Providers>{children}</Providers>
       </body>

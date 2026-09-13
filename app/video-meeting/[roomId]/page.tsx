@@ -1,11 +1,9 @@
 "use client";
 import { useSession } from "next-auth/react";
 import { useParams, useRouter } from "next/navigation";
-import React, { useEffect, useRef, useState } from "react";
-
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { toast } from "react-toastify";
 import { Button } from "@/components/ui/button";
-import Image from "next/image";
 
 const VideoMeeting = () => {
   const params = useParams();
@@ -16,51 +14,46 @@ const VideoMeeting = () => {
   const [zp, setZp] = useState<{ destroy: () => void } | null>(null);
   const [isInMeeting, setIsInMeeting] = useState(false);
   const joinedRef = useRef(false);
+  const sessionRef = useRef(session);
+  const endMeetingRef = useRef<() => void>(() => {});
+
+  const endMeeting = useCallback(() => {
+    setZp((prev) => {
+      prev?.destroy();
+      return null;
+    });
+    setIsInMeeting(false);
+    router.push("/");
+  }, [router]);
 
   useEffect(() => {
-    if (
-      !joinedRef.current &&
-      status === "authenticated" &&
-      session?.user?.name &&
-      containerRef.current
-    ) {
-      joinedRef.current = true;
-      joinMeeting(containerRef.current);
-    } else if (status !== "loading") {
-      console.log("session is not authenticate .please login before use");
-    }
-  }, [session, status]);
+    sessionRef.current = session;
+    endMeetingRef.current = endMeeting;
+  });
 
-  useEffect(() => {
-    return () => {
-      if (zp) {
-        zp.destroy();
-      }
-    };
-  }, [zp]);
-
-  const joinMeeting = async (element: HTMLDivElement) => {
-    const { ZegoUIKitPrebuilt } =
-      await import("@zegocloud/zego-uikit-prebuilt");
-    // generate Kit Token
+  const joinMeeting = useCallback(async (element: HTMLDivElement) => {
+    const { ZegoUIKitPrebuilt } = await import("@zegocloud/zego-uikit-prebuilt");
     const appID = Number(process.env.NEXT_PUBLIC_ZEGOAPP_ID);
     const serverSecret = process.env.NEXT_PUBLIC_ZEGO_SERVER_SECRET;
     if (!appID || !serverSecret) {
       throw new Error("please provide appId and secret key");
     }
 
+    const currentSession = sessionRef.current;
+    const userId = currentSession?.user?.id || crypto.randomUUID();
+    const userName = currentSession?.user?.name || "Guest";
+
     const kitToken = ZegoUIKitPrebuilt.generateKitTokenForTest(
       appID,
       serverSecret,
       roomID,
-      session?.user?.id || Date.now().toString(),
-      session?.user?.name || "Guest",
+      userId,
+      userName,
     );
 
-    // Create instance object from Kit Token.
     const zegoInstance = ZegoUIKitPrebuilt.create(kitToken);
     setZp(zegoInstance);
-    // start the call
+
     try {
       zegoInstance.joinRoom({
         container: element,
@@ -79,11 +72,11 @@ const VideoMeeting = () => {
         showTurnOffRemoteMicrophoneButton: true,
         showRemoveUserButton: true,
         onJoinRoom: () => {
-          toast.success("Meeting joined succesfully");
+          toast.success("Meeting joined");
           setIsInMeeting(true);
         },
         onLeaveRoom: () => {
-          endMeeting();
+          endMeetingRef.current();
         },
       });
     } catch (error) {
@@ -91,93 +84,48 @@ const VideoMeeting = () => {
       toast.error("Could not join meeting. Please allow camera and microphone permissions and try again.");
       joinedRef.current = false;
     }
-  };
+  }, [roomID]);
 
-  const endMeeting = () => {
-    if (zp) {
-      zp.destroy();
+  useEffect(() => {
+    if (
+      !joinedRef.current &&
+      status === "authenticated" &&
+      session?.user?.name &&
+      containerRef.current
+    ) {
+      joinedRef.current = true;
+      joinMeeting(containerRef.current);
     }
-    toast.success("Meeting end succesfully");
-    setZp(null);
-    setIsInMeeting(false);
-    router.push("/");
-  };
+  }, [status, session, joinMeeting]);
+
+  useEffect(() => {
+    return () => {
+      if (zp) {
+        zp.destroy();
+      }
+    };
+  }, [zp]);
 
   return (
-    <div className="flex flex-col min-h-screen bg-gray-100 dark:bg-gray-900">
+    <div className="flex flex-col h-screen bg-background">
       <div
-        className={`grow flex flex-col md:flex-row relative ${
-          isInMeeting ? "h-screen" : ""
-        }`}
-      >
-        <div
-          ref={containerRef}
-          className="video-container grow"
-          style={{ height: isInMeeting ? "100%" : "calc(100vh - 4rem)" }}
-        ></div>
-      </div>
+        ref={containerRef}
+        className="flex-1"
+        style={{ minHeight: isInMeeting ? "100%" : "calc(100vh - 4rem)" }}
+      />
+
       {!isInMeeting && (
-        <div className="flex flex-col">
-          <div className="p-6">
-            <h2 className="text-2xl font-bold mb-4 text-gray-800 dark:text-white">
-              Meeting Info
-            </h2>
-            <p className="mb-4 text-gray-600 dark:text-gray-300">
-              Participant - {session?.user?.name || "You"}
-            </p>
-            <Button
-              onClick={endMeeting}
-              className="w-full bg-red-500 hover:bg-red-200 text-white hover:text-black"
-            >
-              End Meeting
+        <div className="border-t border-border bg-background p-4">
+          <div className="max-w-xl mx-auto flex items-center justify-between">
+            <div className="space-y-1">
+              <p className="text-sm font-medium">Joining as</p>
+              <p className="text-sm text-muted-foreground">
+                {session?.user?.name || "Guest"}
+              </p>
+            </div>
+            <Button variant="destructive" onClick={endMeeting}>
+              Leave meeting
             </Button>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 p-6 bg-gray-200 dark:bg-gray-700">
-            <div className="text-center">
-              <Image
-                src="/images/videoQuality.jpg"
-                alt="Feature 1"
-                width={150}
-                height={150}
-                className="mx-auto mb-2 rounded-full"
-              />
-              <h3 className="text-lg font-semibold mb-1 text-gray-800 dark:text-white">
-                HD Video Quality
-              </h3>
-              <p className="text-sm text-gray-600 dark:text-gray-300">
-                Experience crystal clear video calls
-              </p>
-            </div>
-            <div className="text-center">
-              <Image
-                src="/images/screenShare.jpg"
-                alt="Feature 1"
-                width={150}
-                height={150}
-                className="mx-auto mb-2 rounded-full"
-              />
-              <h3 className="text-lg font-semibold mb-1 text-gray-800 dark:text-white">
-                Screen Sharing
-              </h3>
-              <p className="text-sm text-gray-600 dark:text-gray-300">
-                Easily share your screen with participant
-              </p>
-            </div>
-            <div className="text-center">
-              <Image
-                src="/images/videoSecure.jpg"
-                alt="Feature 1"
-                width={150}
-                height={150}
-                className="mx-auto mb-2 rounded-full"
-              />
-              <h3 className="text-lg font-semibold mb-1 text-gray-800 dark:text-white">
-                Secure Meetings
-              </h3>
-              <p className="text-sm text-gray-600 dark:text-gray-300">
-                Your meetings are protected and private
-              </p>
-            </div>
           </div>
         </div>
       )}
