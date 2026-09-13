@@ -1,6 +1,7 @@
 "use client"
 import Script from "next/script"
-import { SessionProvider, type Session } from "next-auth/react"
+import { SessionProvider } from "next-auth/react"
+import type { Session } from "next-auth"
 import { ThemeProvider } from "@/components/theme-provider"
 import {ToastContainer} from "react-toastify"
 import "react-toastify/dist/ReactToastify.css"
@@ -16,7 +17,7 @@ const themeScript = `
   })();
 `
 
-export function Providers({ children, session }: { children: React.ReactNode; session: Session | null }) {
+export function Providers({ children, session }: { children: React.ReactNode; session?: Session | null }) {
   return (
     <SessionProvider session={session}>
       <Script id="theme-init" strategy="beforeInteractive" dangerouslySetInnerHTML={{ __html: themeScript }} />

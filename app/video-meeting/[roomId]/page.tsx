@@ -9,11 +9,11 @@ import Image from "next/image";
 
 const VideoMeeting = () => {
   const params = useParams();
-  const roomID = params.roomId;
+  const roomID = String(params.roomId);
   const { data: session, status } = useSession();
   const router = useRouter();
-  const containerRef = useRef(null); // ref for video container element
-  const [zp, setZp] = useState(null);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [zp, setZp] = useState<{ destroy: () => void } | null>(null);
   const [isInMeeting, setIsInMeeting] = useState(false);
   const joinedRef = useRef(false);
 
@@ -39,13 +39,13 @@ const VideoMeeting = () => {
     };
   }, [zp]);
 
-  const joinMeeting = async (element) => {
+  const joinMeeting = async (element: HTMLDivElement) => {
     const { ZegoUIKitPrebuilt } =
       await import("@zegocloud/zego-uikit-prebuilt");
     // generate Kit Token
     const appID = Number(process.env.NEXT_PUBLIC_ZEGOAPP_ID);
     const serverSecret = process.env.NEXT_PUBLIC_ZEGO_SERVER_SECRET;
-    if (!appID && !serverSecret) {
+    if (!appID || !serverSecret) {
       throw new Error("please provide appId and secret key");
     }
 

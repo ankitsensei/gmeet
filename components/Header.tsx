@@ -73,8 +73,8 @@ const Header = () => {
               <Avatar className="cursor-pointer">
                 {session?.user?.image ? (
                   <AvatarImage
-                    src={session?.user?.image}
-                    alt={session?.user?.name}
+                    src={session?.user?.image ?? undefined}
+                    alt={session?.user?.name ?? undefined}
                   />
                 ) : (
                   <AvatarFallback className="text-lg dark:bg-gray-300">
@@ -102,8 +102,8 @@ const Header = () => {
               <Avatar className="w-20 h-20 mb-2">
                 {session?.user?.image ? (
                   <AvatarImage
-                    src={session?.user?.image}
-                    alt={session?.user?.name}
+                    src={session?.user?.image ?? undefined}
+                    alt={session?.user?.name ?? undefined}
                   />
                 ) : (
                   <AvatarFallback className="text-2xl dark:bg-gray-300">

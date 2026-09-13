@@ -21,7 +21,7 @@ import { v4 as uuidv4 } from "uuid";
 import Loader from "@/components/Loader";
 
 const MeetingAction = () => {
-  const [isLoading, setIsLoading] = useState();
+  const [isLoading, setIsLoading] = useState(false);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [baseUrl, setBaseUrl] = useState("");
   const router = useRouter();

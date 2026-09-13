@@ -8,35 +8,44 @@ if (!MONGODB_URI) {
   );
 }
 
+interface MongooseCache {
+  conn: typeof mongoose | null;
+  promise: Promise<typeof mongoose> | null;
+}
+
+declare global {
+  // eslint-disable-next-line no-var
+  var mongoose: MongooseCache | undefined;
+}
+
 let cached = global.mongoose;
 if (!cached) {
   cached = global.mongoose = { conn: null, promise: null };
 }
 
 async function dbConnect() {
-  if (cached.conn) {
-    return cached.conn;
+  if (cached!.conn) {
+    return cached!.conn;
   }
-  if (!cached.promise) {
+  if (!cached!.promise) {
     const object = {
       bufferCommands: false,
       serverSelectionTimeoutMS: 5000,
     };
 
-    // Create a new connection and return it
-    cached.promise = mongoose.connect(MONGODB_URI, object).then((mongoose) => {
+    cached!.promise = mongoose.connect(MONGODB_URI!, object).then((mongoose) => {
       return mongoose;
     });
 
     try {
-      cached.conn = await cached.promise;
+      cached!.conn = await cached!.promise;
     } catch (error) {
-      cached.promise = null;
+      cached!.promise = null;
       throw error;
     }
   }
 
-  return cached.conn;
+  return cached!.conn;
 }
 
 export default dbConnect;
