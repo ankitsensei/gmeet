@@ -8,7 +8,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Info, LogOut, Moon, Plus, Sun, Video, X } from "lucide-react";
 import { signOut, useSession } from "next-auth/react";
-import { useTheme } from "next-themes";
+import { useTheme } from "@/components/theme-provider";
 import Link from "next/link";
 import React, { useState } from "react";
 
