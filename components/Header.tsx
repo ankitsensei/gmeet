@@ -67,20 +67,22 @@ const Header = () => {
         </Button>
 
         <DropdownMenu open={open} onOpenChange={setOpen}>
-          <DropdownMenuTrigger asChild>
-            <Avatar className="cursor-pointer">
-              {session?.user?.image ? (
-                <AvatarImage
-                  src={session?.user?.image}
-                  alt={session?.user?.name}
-                />
-              ) : (
-                <AvatarFallback className="text-lg dark:bg-gray-300">
-                  {userPlaceHolder}
-                </AvatarFallback>
-              )}
-            </Avatar>
-          </DropdownMenuTrigger>
+          <DropdownMenuTrigger
+            render={
+              <Avatar className="cursor-pointer">
+                {session?.user?.image ? (
+                  <AvatarImage
+                    src={session?.user?.image}
+                    alt={session?.user?.name}
+                  />
+                ) : (
+                  <AvatarFallback className="text-lg dark:bg-gray-300">
+                    {userPlaceHolder}
+                  </AvatarFallback>
+                )}
+              </Avatar>
+            }
+          />
           <DropdownMenuContent align="end" className="w-80 p-4">
             <div className="flex justify-between items-center mb-2">
               <span className="text-sm font-bold text-gray-800 dark:text-white">
