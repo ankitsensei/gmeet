@@ -4,13 +4,17 @@ import Image from "next/image";
 import Link from "next/link";
 import { FaGithub } from "react-icons/fa";
 import { signIn } from "next-auth/react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { Loader } from "lucide-react";
 
-const page = () => {
+const Page = () => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const url = process.env.NEXTAUTH_URL;
+
+  useEffect(() => {
+    localStorage.removeItem("hasShownWelcome");
+  });
 
   const handleLogin = async (provider) => {
     setIsLoading(true);
@@ -66,7 +70,9 @@ const page = () => {
           </Button>
           <div className="relative flex items-center my-6">
             <div className="flex-grow border-t border-gray-300 dark:border-gray-600"></div>
-            <span className="px-3 text-sm text-gray-500 dark:text-gray-400">Or</span>
+            <span className="px-3 text-sm text-gray-500 dark:text-gray-400">
+              Or
+            </span>
             <div className="flex-grow border-t border-gray-300 dark:border-gray-600"></div>
           </div>
           <Button
@@ -92,4 +98,4 @@ const page = () => {
   );
 };
 
-export default page;
+export default Page;
