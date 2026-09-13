@@ -1,8 +1,13 @@
 "use client"
+import dynamic from "next/dynamic"
 import { SessionProvider, type Session } from "next-auth/react"
-import {ThemeProvider} from "next-themes"
 import {ToastContainer} from "react-toastify"
 import "react-toastify/dist/ReactToastify.css"
+
+const ThemeProvider = dynamic(
+  () => import("next-themes").then((mod) => mod.ThemeProvider),
+  { ssr: false }
+)
 
 export function Providers({ children, session }: { children: React.ReactNode; session: Session | null }) {
   return (

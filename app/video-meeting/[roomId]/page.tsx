@@ -2,7 +2,6 @@
 import { useSession } from "next-auth/react";
 import { useParams, useRouter } from "next/navigation";
 import React, { useEffect, useRef, useState } from "react";
-import { ZegoUIKitPrebuilt } from "@zegocloud/zego-uikit-prebuilt";
 
 import { toast } from "react-toastify";
 import { Button } from "@/components/ui/button";
@@ -42,6 +41,7 @@ const VideoMeeting = () => {
   }, [zp]);
 
   const joinMeeting = async (element) => {
+    const { ZegoUIKitPrebuilt } = await import("@zegocloud/zego-uikit-prebuilt");
     // generate Kit Token
     const appID = Number(process.env.NEXT_PUBLIC_ZEGOAPP_ID);
     const serverSecret = process.env.NEXT_PUBLIC_ZEGO_SERVER_SECRET;
