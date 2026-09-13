@@ -16,15 +16,18 @@ const VideoMeeting = () => {
   const containerRef = useRef(null); // ref for video container element
   const [zp, setZp] = useState(null);
   const [isInMeeting, setIsInMeeting] = useState(false);
+  const joinedRef = useRef(false);
 
   useEffect(() => {
     if (
+      !joinedRef.current &&
       status === "authenticated" &&
       session?.user?.name &&
       containerRef.current
     ) {
+      joinedRef.current = true;
       joinMeeting(containerRef.current);
-    } else {
+    } else if (status !== "loading") {
       console.log("session is not authenticate .please login before use");
       toast.error("Session not authenticated. Please login before use");
     }
