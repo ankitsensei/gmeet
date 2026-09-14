@@ -6,10 +6,12 @@ import { signIn } from "next-auth/react";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { Video } from "lucide-react";
+import { useSearchParams } from "next/navigation";
 
 const Page = () => {
   const [isLoading, setIsLoading] = useState(false);
-  const url = process.env.NEXTAUTH_URL;
+  const searchParams = useSearchParams();
+  const callbackUrl = searchParams.get("callbackUrl") || "/";
 
   useEffect(() => {
     localStorage.removeItem("hasShownWelcome");
@@ -18,7 +20,7 @@ const Page = () => {
   const handleLogin = async (provider: "google" | "github") => {
     setIsLoading(true);
     try {
-      await signIn(provider, { callbackUrl: url });
+      await signIn(provider, { callbackUrl });
       toast.info(`Logging in with ${provider}`);
     } catch {
       toast.error(`Failed to login with ${provider}`);

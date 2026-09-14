@@ -12,14 +12,16 @@ export async function middleware(req: NextRequest) {
     return NextResponse.redirect(new URL("/", req.url));
   }
 
-  // If user tries to access home page without login
+  // If user tries to access protected page without login
   if (!token && req.nextUrl.pathname !== "/user-auth") {
-    return NextResponse.redirect(new URL("/user-auth", req.url));
+    const loginUrl = new URL("/user-auth", req.url);
+    loginUrl.searchParams.set("callbackUrl", req.nextUrl.pathname);
+    return NextResponse.redirect(loginUrl);
   }
 
   return NextResponse.next();
 }
 
 export const config = {
-  matcher: ["/", "/user-auth"],
+  matcher: ["/", "/user-auth", "/video-meeting/:path*"],
 };
