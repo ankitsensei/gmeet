@@ -3,12 +3,12 @@ import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import { FaGithub } from "react-icons/fa";
 import { signIn } from "next-auth/react";
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { Video } from "lucide-react";
 import { useSearchParams } from "next/navigation";
 
-const Page = () => {
+const LoginForm = () => {
   const [isLoading, setIsLoading] = useState(false);
   const searchParams = useSearchParams();
   const callbackUrl = searchParams.get("callbackUrl") || "/";
@@ -106,6 +106,14 @@ const Page = () => {
         </div>
       </div>
     </div>
+  );
+};
+
+const Page = () => {
+  return (
+    <Suspense>
+      <LoginForm />
+    </Suspense>
   );
 };
 
